@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block login %}
+{% endblock login %}
+
+{% block content %}
+    <h3 class="text-center mt-5 mb-5">Ваша корзина</h3>
+    <table class="table text-center mt-5 mb-5">
+      <thead>
+        <tr>
+            <th scope="col">Наименование</th>
+            <th scope="col">Изображение</th>
+            <th scope="col">Цена</th>
+            <th scope="col">Кол-во</th>
+            <th scope="col">Общая цена</th>
+            <th scope="col">Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart.products.all %}
+            <tr>
+                <th scope="row">{{ item.content_object.title }}</th>
+                <td class="w-25"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
+                <td>{{ item.content_object.price }} руб.</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.final_price }} руб.</td>
+                <td>
+                    <a class="btn btn-outline-dark mt-auto" aria-current="page"
+                   href="{% url 'del_from_cart' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}">Del from cart</a>
+                </td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+{% endblock content %}
