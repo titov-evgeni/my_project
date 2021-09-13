@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 
+
 User = get_user_model()
 
 
@@ -19,15 +20,19 @@ class ProductsForMainPage:
         products = []
         ct_models = ContentType.objects.filter(model__in=args)
         for ct_model in ct_models:
-            model_products = ct_model.model_class()._base_manager.all().order_by('-id')
+            model_products = ct_model.model_class()._base_manager.all()
             products.extend(model_products)
 
         return products
 
 
 class Category(models.Model):
+    CHOICES = (
+        ('1', 'notebook'),
+        ('2', 'smartphone'),
+    )
     name = models.CharField(max_length=255, verbose_name="category name")
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, choices=CHOICES)
 
     def __str__(self):
         return self.name
@@ -56,8 +61,10 @@ class Product(models.Model):
 class Customer(models.Model):
     user = models.ForeignKey(User, verbose_name="user",
                              on_delete=models.CASCADE)
-    phone = models.CharField(max_length=15, verbose_name="phone")
-    address = models.CharField(max_length=255, verbose_name="address")
+    phone = models.CharField(max_length=15, verbose_name="phone", null=True,
+                             blank=True)
+    address = models.CharField(max_length=255, verbose_name="address",
+                               null=True, blank=True)
 
     def __str__(self):
         return f"Покупатель: {self.user.first_name} {self.user.last_name}"
@@ -90,7 +97,7 @@ class CartProduct(models.Model):
                                       verbose_name="final_price")
 
     def __str__(self):
-        return f"Товар {self.content_object.title} для корзины"
+        return f"Товар {self.content_object} для корзины"
 
 
 class Notebook(Product):
@@ -124,6 +131,9 @@ class Smartphone(Product):
                                 verbose_name='main cam')
     frontal_cam = models.CharField(max_length=255,
                                    verbose_name='frontal cam')
+
+    def __str__(self):
+        return f"{self.category.name} : {self.title}"
 
     def get_absolute_url(self):
         return get_product_url(self, 'product_detail')

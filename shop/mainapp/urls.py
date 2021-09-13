@@ -5,6 +5,7 @@ from .views import (
     CartView,
     AddToCartView,
     DeleteFromCartView,
+    register
 
 )
 from django.urls.conf import include
@@ -20,5 +21,6 @@ urlpatterns = [
          name='add_to_cart'),
     path('del-from-cart/<str:ct_model>/<str:slug>/',
          DeleteFromCartView.as_view(), name='del_from_cart'),
-    path('accounts/', include(auth_urls))
+    path('accounts/', include(auth_urls)),
+    path('register/', register, name='register'),
 ]
