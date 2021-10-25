@@ -61,7 +61,7 @@ class ProductDetailView(DetailView):
         return context
 
 
-class CartView(View):
+class CartView(CartMixin, View):
 
     @staticmethod
     def get(request):
